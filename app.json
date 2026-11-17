@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "name": "FarmGuard AI",
+    "slug": "farmguard-ai",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "scheme": "farmguard",
+    "android": {
+      "package": "com.devvijaymate.farmguardai"
+    },
+    "plugins": [
+      "expo-router"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

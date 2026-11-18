@@ -6,6 +6,10 @@ FarmGuard AI is a mobile platform that helps farmers report plant and livestock 
 
 The mobile foundation uses Expo, React Native, TypeScript, and Expo Router. The first screen lets a farmer begin either a plant-health or livestock-health report.
 
+## Day 2 status
+
+The app now includes bottom-tab navigation for the farmer dashboard, report history, and profile, plus prototype sign-in and registration screens. Authentication and report data are interface-only until the FastAPI backend is introduced.
+
 ## Run locally
 
 1. Install dependencies: `npm install`

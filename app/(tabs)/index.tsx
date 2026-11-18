@@ -1,3 +1,4 @@
+import { useRouter } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -9,11 +10,14 @@ type ReportCardProps = {
 };
 
 function ReportCard({ emoji, title, description, color }: ReportCardProps) {
+  const router = useRouter();
+
   return (
     <TouchableOpacity
       accessibilityRole="button"
       accessibilityLabel={`Start a ${title.toLowerCase()} report`}
       activeOpacity={0.85}
+      onPress={() => router.push("/(tabs)/reports")}
       style={[styles.card, { borderLeftColor: color }]}
     >
       <Text style={styles.cardEmoji}>{emoji}</Text>
@@ -27,12 +31,17 @@ function ReportCard({ emoji, title, description, color }: ReportCardProps) {
 }
 
 export default function HomeScreen() {
+  const router = useRouter();
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <View style={styles.brandRow}>
           <View style={styles.logo}><Text style={styles.logoText}>FG</Text></View>
           <Text style={styles.brand}>FarmGuard AI</Text>
+          <TouchableOpacity onPress={() => router.push("/login")} style={styles.signInButton}>
+            <Text style={styles.signInText}>Sign in</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.hero}>
@@ -73,22 +82,17 @@ const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: "#F6FAF4" },
   container: { flex: 1, paddingHorizontal: 24, paddingTop: 12 },
   brandRow: { alignItems: "center", flexDirection: "row", gap: 10 },
-  logo: {
-    alignItems: "center", backgroundColor: "#1F6F36", borderRadius: 12,
-    height: 42, justifyContent: "center", width: 42,
-  },
+  logo: { alignItems: "center", backgroundColor: "#1F6F36", borderRadius: 12, height: 42, justifyContent: "center", width: 42 },
   logoText: { color: "#FFFFFF", fontSize: 14, fontWeight: "800" },
-  brand: { color: "#173A20", fontSize: 19, fontWeight: "800" },
-  hero: { marginTop: 58 },
+  brand: { color: "#173A20", flex: 1, fontSize: 19, fontWeight: "800" },
+  signInButton: { backgroundColor: "#E8F3E7", borderRadius: 18, paddingHorizontal: 12, paddingVertical: 8 },
+  signInText: { color: "#245C31", fontSize: 13, fontWeight: "800" },
+  hero: { marginTop: 52 },
   eyebrow: { color: "#438654", fontSize: 11, fontWeight: "800", letterSpacing: 1.2 },
   heading: { color: "#173A20", fontSize: 34, fontWeight: "800", letterSpacing: -0.8, lineHeight: 41, marginTop: 10 },
   subheading: { color: "#5E7162", fontSize: 16, lineHeight: 24, marginTop: 14 },
   cards: { gap: 14, marginTop: 38 },
-  card: {
-    alignItems: "center", backgroundColor: "#FFFFFF", borderLeftWidth: 5, borderRadius: 16,
-    elevation: 2, flexDirection: "row", minHeight: 106, paddingHorizontal: 17, shadowColor: "#14311B",
-    shadowOffset: { height: 2, width: 0 }, shadowOpacity: 0.08, shadowRadius: 8,
-  },
+  card: { alignItems: "center", backgroundColor: "#FFFFFF", borderLeftWidth: 5, borderRadius: 16, elevation: 2, flexDirection: "row", minHeight: 106, paddingHorizontal: 17, shadowColor: "#14311B", shadowOffset: { height: 2, width: 0 }, shadowOpacity: 0.08, shadowRadius: 8 },
   cardEmoji: { fontSize: 30, marginRight: 14 },
   cardContent: { flex: 1 },
   cardTitle: { color: "#213B27", fontSize: 16, fontWeight: "800" },

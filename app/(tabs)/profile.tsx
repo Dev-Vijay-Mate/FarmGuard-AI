@@ -16,7 +16,7 @@ export default function ProfileScreen() {
       <View style={styles.profileCard}><View style={styles.avatar}><Text style={styles.avatarText}>{farmer.name ? farmer.name.slice(0, 1).toUpperCase() : "FG"}</Text></View><View style={styles.profileContent}><Text style={styles.name}>{profileTitle}</Text><Text style={styles.helper}>{profileHelper}</Text></View></View>
       <TouchableOpacity accessibilityRole="button" onPress={() => router.push("/farmer-profile")} style={styles.signInButton}><Text style={styles.signInText}>{farmer.name ? "Edit farmer profile" : "Set up farmer profile"}</Text></TouchableOpacity>
       <Text style={styles.sectionLabel}>FARM MANAGEMENT</Text>
-      <View style={styles.menuGroup}><MenuRow emoji="🚜" title="My farm" description="Add your location and crop details" /><View style={styles.divider} /><MenuRow emoji="🐄" title="My animals" description="Register livestock records" onPress={() => router.push("/animals")} /></View>
+      <View style={styles.menuGroup}><MenuRow emoji="🚜" title="My farm" description="Add your location and crop details" onPress={() => router.push("/farms")} /><View style={styles.divider} /><MenuRow emoji="🐄" title="My animals" description="Register livestock records" onPress={() => router.push("/animals")} /></View>
       <Text style={styles.sectionLabel}>SUPPORT</Text>
       <View style={styles.menuGroup}><MenuRow emoji="💬" title="Help and guidance" description="Learn how FarmGuard AI works" /></View>
       <Text style={styles.note}>Farm and animal records can be added from this profile in the current setup phase.</Text>

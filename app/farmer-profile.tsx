@@ -3,6 +3,7 @@ import { useState } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FarmerProfile, useFarmData } from "./providers/FarmDataProvider";
+import { api, isApiConfigured } from "../services/api";
 
 function Field({ label, value, onChangeText, keyboardType = "default" }: { label: string; value: string; onChangeText: (text: string) => void; keyboardType?: "default" | "phone-pad" }) {
   return <View style={styles.field}><Text style={styles.label}>{label}</Text><TextInput accessibilityLabel={label} keyboardType={keyboardType} onChangeText={onChangeText} placeholder={`Enter ${label.toLowerCase()}`} placeholderTextColor="#8A978D" style={styles.input} value={value} /></View>;
@@ -10,17 +11,21 @@ function Field({ label, value, onChangeText, keyboardType = "default" }: { label
 
 export default function FarmerProfileScreen() {
   const router = useRouter();
-  const { farmer, updateFarmer } = useFarmData();
+  const { farmer, updateFarmer, setBackendFarmerId } = useFarmData();
   const [form, setForm] = useState<FarmerProfile>(farmer);
   const [error, setError] = useState("");
 
   function update(key: keyof FarmerProfile, value: string) { setForm((current) => ({ ...current, [key]: value })); }
-  function save() {
+  async function save() {
     if (!form.name.trim() || !form.phone.trim() || !form.village.trim() || !form.district.trim()) {
       setError("Complete all fields so experts can understand your farm context.");
       return;
     }
     if (form.phone.replace(/\D/g, "").length < 10) { setError("Enter a valid 10-digit mobile number."); return; }
+    if (isApiConfigured) {
+      try { const remoteFarmer = await api.createFarmer(form); setBackendFarmerId(remoteFarmer.id); }
+      catch (requestError) { setError(requestError instanceof Error ? requestError.message : "Unable to save profile to the backend."); return; }
+    }
     updateFarmer(form);
     router.back();
   }

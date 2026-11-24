@@ -1,0 +1,21 @@
+services:
+  database:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: farmguard
+      POSTGRES_USER: farmguard
+      POSTGRES_PASSWORD: farmguard_dev_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  api:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql+psycopg://farmguard:farmguard_dev_password@database:5432/farmguard
+    ports:
+      - "8000:8000"
+    depends_on:
+      - database
+volumes:
+  postgres_data:

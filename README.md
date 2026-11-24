@@ -16,6 +16,10 @@ The app now includes bottom-tab navigation for the farmer dashboard, report hist
 2. Start Expo: `npm run android`
 3. Open the app in an Android emulator or on an Android device using Expo Go.
 
+## Backend (Day 5)
+
+Run `docker compose up --build` to start PostgreSQL and the FastAPI API at `http://localhost:8000`. The interactive API documentation is available at `/docs`. For a physical phone, set `EXPO_PUBLIC_API_URL` to your computer's LAN address (for example, `http://192.168.1.5:8000`), not `localhost`.
+
 ## Initial structure
 
 - `app/_layout.tsx` configures the root navigation stack.

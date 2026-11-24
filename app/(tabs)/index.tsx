@@ -7,9 +7,10 @@ type ReportCardProps = {
   title: string;
   description: string;
   color: string;
+  concernType: "plant" | "livestock";
 };
 
-function ReportCard({ emoji, title, description, color }: ReportCardProps) {
+function ReportCard({ emoji, title, description, color, concernType }: ReportCardProps) {
   const router = useRouter();
 
   return (
@@ -17,7 +18,7 @@ function ReportCard({ emoji, title, description, color }: ReportCardProps) {
       accessibilityRole="button"
       accessibilityLabel={`Start a ${title.toLowerCase()} report`}
       activeOpacity={0.85}
-      onPress={() => router.push("/(tabs)/reports")}
+      onPress={() => router.push({ pathname: "/new-report", params: { type: concernType } })}
       style={[styles.card, { borderLeftColor: color }]}
     >
       <Text style={styles.cardEmoji}>{emoji}</Text>
@@ -58,12 +59,14 @@ export default function HomeScreen() {
             title="Plant health concern"
             description="Report crop symptoms, pests, or disease signs."
             color="#2F8F46"
+            concernType="plant"
           />
           <ReportCard
             emoji="🐄"
             title="Livestock health concern"
             description="Report symptoms observed in your animals."
             color="#C8791D"
+            concernType="livestock"
           />
         </View>
 

@@ -14,6 +14,7 @@ export default function RootLayout() {
         <Stack.Screen name="animals" options={{ presentation: "card" }} />
         <Stack.Screen name="farms" options={{ presentation: "card" }} />
         <Stack.Screen name="new-report" options={{ presentation: "card" }} />
+        <Stack.Screen name="report-evidence" options={{ presentation: "card" }} />
       </Stack>
     </FarmDataProvider>
   );

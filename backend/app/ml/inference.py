@@ -1,4 +1,5 @@
 import numpy as np
+from .guidance import screening_guidance
 
 LOW_CONFIDENCE_THRESHOLD = 0.70
 
@@ -13,4 +14,6 @@ def screen_tomato_leaf(pixels: np.ndarray) -> dict:
         label, confidence = "Tomato leaf: discoloration pattern", min(0.62, 0.45 + brown_strength)
     else:
         label, confidence = "Inconclusive", 0.50
-    return {"label": label, "confidence": round(confidence, 2), "needs_expert_review": True, "model": "tomato-screening-baseline-v0", "disclaimer": "This preliminary screening result is not a diagnosis. A trained and field-validated disease model is required before disease-specific claims."}
+    result = {"label": label, "confidence": round(confidence, 2), "needs_expert_review": True, "model": "tomato-screening-baseline-v0", "disclaimer": "This preliminary screening result is not a diagnosis. A trained and field-validated disease model is required before disease-specific claims."}
+    result["guidance"] = screening_guidance(result)
+    return result

@@ -29,3 +29,4 @@ class ScreeningRead(BaseModel):
     needs_expert_review: bool
     model: str
     disclaimer: str
+    guidance: list[str]

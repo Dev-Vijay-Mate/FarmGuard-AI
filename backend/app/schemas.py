@@ -23,3 +23,9 @@ class ReportRead(ReportCreate):
     status: str
     created_at: datetime
     model_config = {"from_attributes": True}
+class ScreeningRead(BaseModel):
+    label: str
+    confidence: float
+    needs_expert_review: bool
+    model: str
+    disclaimer: str

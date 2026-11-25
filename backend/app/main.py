@@ -1,9 +1,11 @@
-from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi import Depends, FastAPI, File, HTTPException, UploadFile, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from .database import Base, engine, get_db
 from .models import Farmer, Report
-from .schemas import FarmerCreate, FarmerRead, ReportCreate, ReportRead
+from .schemas import FarmerCreate, FarmerRead, ReportCreate, ReportRead, ScreeningRead
+from .ml.inference import screen_tomato_leaf
+from .ml.preprocessing import preprocess_image
 
 app = FastAPI(title="FarmGuard AI API", version="0.1.0")
 @app.on_event("startup")
@@ -26,3 +28,11 @@ def create_report(payload: ReportCreate, db: Session = Depends(get_db)):
 @app.get("/farmers/{farmer_id}/reports", response_model=list[ReportRead])
 def list_reports(farmer_id: int, db: Session = Depends(get_db)):
     return list(db.scalars(select(Report).where(Report.farmer_id == farmer_id).order_by(Report.created_at.desc())))
+@app.post("/ai/screenings/tomato-leaf", response_model=ScreeningRead)
+async def screen_tomato_leaf_image(image: UploadFile = File(...)):
+    if image.content_type not in {"image/jpeg", "image/png", "image/webp"}: raise HTTPException(415, "Upload a JPEG, PNG, or WebP image")
+    content = await image.read()
+    if len(content) > 8 * 1024 * 1024: raise HTTPException(413, "Image must be smaller than 8 MB")
+    try: pixels, _ = preprocess_image(content)
+    except Exception as error: raise HTTPException(422, "The uploaded file is not a valid image") from error
+    return screen_tomato_leaf(pixels)

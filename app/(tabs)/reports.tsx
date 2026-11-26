@@ -1,4 +1,8 @@
+import { useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { api, isApiConfigured } from "../../services/api";
+import { useFarmData } from "../providers/FarmDataProvider";
 
 type ReportPreviewProps = { icon: string; title: string; detail: string; status: "Under review" | "Guidance ready"; tone: "plant" | "livestock" };
 
@@ -17,6 +21,8 @@ function ReportPreview({ icon, title, detail, status, tone }: ReportPreviewProps
 }
 
 export default function ReportsScreen() {
+  const { backendFarmerId }=useFarmData(); const [remote,setRemote]=useState<Array<{id:number;concern_type:string;symptoms:string;status:string;assessment_label?:string}>>([]);
+  useFocusEffect(useCallback(()=>{if(isApiConfigured&&backendFarmerId) api.listReports(backendFarmerId).then(setRemote).catch(()=>setRemote([]));},[backendFarmerId]));
   return (
     <View style={styles.container}>
       <View style={styles.intro}><Text style={styles.title}>Your health reports</Text><Text style={styles.description}>Track plant and livestock concerns in one place.</Text></View>
@@ -26,6 +32,7 @@ export default function ReportsScreen() {
         <TouchableOpacity accessibilityRole="button" style={styles.filter}><Text style={styles.filterText}>Livestock</Text></TouchableOpacity>
       </View>
       <Text style={styles.sectionLabel}>SAMPLE PREVIEWS</Text>
+      {remote.map(item=><ReportPreview key={item.id} icon={item.concern_type==="plant"?"🌿":"🐄"} title={item.assessment_label||item.symptoms} detail={`${item.concern_type} health • ${item.status.replace("_"," ")}`} status={item.status==="assessment_ready"?"Guidance ready":"Under review"} tone={item.concern_type==="plant"?"plant":"livestock"} />)}
       <ReportPreview icon="🌿" title="Tomato leaf spots" detail="Plant health • Today" status="Under review" tone="plant" />
       <ReportPreview icon="🐄" title="Cattle feeding concern" detail="Livestock health • Yesterday" status="Guidance ready" tone="livestock" />
       <View style={styles.notice}><Text style={styles.noticeTitle}>Reports will appear here</Text><Text style={styles.noticeText}>These are interface previews. Submitted reports will be saved and tracked after the reporting and backend features are added.</Text></View>

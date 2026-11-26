@@ -10,6 +10,10 @@ The mobile foundation uses Expo, React Native, TypeScript, and Expo Router. The 
 
 The app now includes bottom-tab navigation for the farmer dashboard, report history, and profile, plus prototype sign-in and registration screens. Authentication and report data are interface-only until the FastAPI backend is introduced.
 
+## Day 7 assessment workflow
+
+With `EXPO_PUBLIC_API_URL` configured and the backend running, a saved farmer profile can submit a plant report with a leaf photo. The app uploads the image for preliminary tomato-leaf screening, stores the result with the report, and displays the uncertainty and expert-review guidance. The present baseline is deliberately non-diagnostic and does not make disease-specific treatment claims.
+
 ## Run locally
 
 1. Install dependencies: `npm install`

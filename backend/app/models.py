@@ -23,4 +23,7 @@ class Report(Base):
     latitude: Mapped[str | None] = mapped_column(String(30), nullable=True)
     longitude: Mapped[str | None] = mapped_column(String(30), nullable=True)
     status: Mapped[str] = mapped_column(String(30), default="submitted")
+    assessment_label: Mapped[str | None] = mapped_column(String(180), nullable=True)
+    assessment_confidence: Mapped[str | None] = mapped_column(String(10), nullable=True)
+    assessment_guidance: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)

@@ -22,6 +22,9 @@ class ReportRead(ReportCreate):
     id: int
     status: str
     created_at: datetime
+    assessment_label: str | None = None
+    assessment_confidence: str | None = None
+    assessment_guidance: str | None = None
     model_config = {"from_attributes": True}
 class ScreeningRead(BaseModel):
     label: str

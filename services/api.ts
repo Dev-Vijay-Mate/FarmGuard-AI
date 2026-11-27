@@ -19,4 +19,5 @@ export const api = {
   screenTomatoLeaf: async (uri: string) => { if (!API_BASE_URL) throw new Error("Set EXPO_PUBLIC_API_URL before connecting to the backend."); const form = new FormData(); form.append("image", { uri, name:"leaf.jpg", type:"image/jpeg" } as never); const response = await fetch(`${API_BASE_URL}/ai/screenings/tomato-leaf`, { method:"POST", body:form }); if(!response.ok) throw new Error("Unable to screen this image"); return response.json() as Promise<Screening>; },
   attachAssessment: (reportId:number, assessment:Screening) => request(`/reports/${reportId}/assessment`, {method:"POST",body:JSON.stringify(assessment)}),
   listReports: (farmerId:number) => request<Array<{id:number; concern_type:string; symptoms:string; status:string; assessment_label?:string; assessment_confidence?:string}>>(`/farmers/${farmerId}/reports`),
+  getReport: (reportId:number) => request<{id:number;concern_type:string;symptoms:string;description:string;status:string;created_at:string;assessment_label?:string;assessment_confidence?:string;assessment_guidance?:string}>(`/reports/${reportId}`),
 };

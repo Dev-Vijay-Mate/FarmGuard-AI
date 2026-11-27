@@ -1,38 +1,37 @@
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
+import { useRouter } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { api, isApiConfigured } from "../../services/api";
 import { useFarmData } from "../providers/FarmDataProvider";
 
 type ReportPreviewProps = { icon: string; title: string; detail: string; status: "Under review" | "Guidance ready"; tone: "plant" | "livestock" };
 
-function ReportPreview({ icon, title, detail, status, tone }: ReportPreviewProps) {
+function ReportPreview({ icon, title, detail, status, tone, onPress }: ReportPreviewProps & {onPress?:()=>void}) {
   const statusStyle = tone === "plant" ? styles.plantStatus : styles.livestockStatus;
   return (
-    <View style={styles.reportCard}>
+    <TouchableOpacity onPress={onPress} style={styles.reportCard}>
       <View style={[styles.iconCircle, tone === "plant" ? styles.plantCircle : styles.livestockCircle]}><Text style={styles.icon}>{icon}</Text></View>
       <View style={styles.reportContent}>
         <Text style={styles.reportTitle}>{title}</Text><Text style={styles.reportDetail}>{detail}</Text>
         <View style={[styles.status, statusStyle]}><Text style={styles.statusText}>{status}</Text></View>
       </View>
       <Text style={styles.arrow}>›</Text>
-    </View>
+    </TouchableOpacity>
   );
 }
 
 export default function ReportsScreen() {
-  const { backendFarmerId }=useFarmData(); const [remote,setRemote]=useState<Array<{id:number;concern_type:string;symptoms:string;status:string;assessment_label?:string}>>([]);
+  const router=useRouter();const { backendFarmerId }=useFarmData(); const [filter,setFilter]=useState<"all"|"plant"|"livestock">("all");const [remote,setRemote]=useState<Array<{id:number;concern_type:string;symptoms:string;status:string;assessment_label?:string}>>([]);
   useFocusEffect(useCallback(()=>{if(isApiConfigured&&backendFarmerId) api.listReports(backendFarmerId).then(setRemote).catch(()=>setRemote([]));},[backendFarmerId]));
   return (
     <View style={styles.container}>
       <View style={styles.intro}><Text style={styles.title}>Your health reports</Text><Text style={styles.description}>Track plant and livestock concerns in one place.</Text></View>
       <View style={styles.filterRow}>
-        <TouchableOpacity accessibilityRole="button" style={[styles.filter, styles.activeFilter]}><Text style={styles.activeFilterText}>All reports</Text></TouchableOpacity>
-        <TouchableOpacity accessibilityRole="button" style={styles.filter}><Text style={styles.filterText}>Plants</Text></TouchableOpacity>
-        <TouchableOpacity accessibilityRole="button" style={styles.filter}><Text style={styles.filterText}>Livestock</Text></TouchableOpacity>
+        {(["all","plant","livestock"] as const).map(x=><TouchableOpacity key={x} onPress={()=>setFilter(x)} style={[styles.filter,filter===x&&styles.activeFilter]}><Text style={filter===x?styles.activeFilterText:styles.filterText}>{x==="all"?"All reports":x==="plant"?"Plants":"Livestock"}</Text></TouchableOpacity>)}
       </View>
       <Text style={styles.sectionLabel}>SAMPLE PREVIEWS</Text>
-      {remote.map(item=><ReportPreview key={item.id} icon={item.concern_type==="plant"?"🌿":"🐄"} title={item.assessment_label||item.symptoms} detail={`${item.concern_type} health • ${item.status.replace("_"," ")}`} status={item.status==="assessment_ready"?"Guidance ready":"Under review"} tone={item.concern_type==="plant"?"plant":"livestock"} />)}
+      {remote.filter(item=>filter==="all"||item.concern_type===filter).map(item=><ReportPreview onPress={()=>router.push({pathname:"/report-detail",params:{id:String(item.id)}})} key={item.id} icon={item.concern_type==="plant"?"🌿":"🐄"} title={item.assessment_label||item.symptoms} detail={`${item.concern_type} health • ${item.status.replace("_"," ")}`} status={item.status==="assessment_ready"?"Guidance ready":"Under review"} tone={item.concern_type==="plant"?"plant":"livestock"} />)}
       <ReportPreview icon="🌿" title="Tomato leaf spots" detail="Plant health • Today" status="Under review" tone="plant" />
       <ReportPreview icon="🐄" title="Cattle feeding concern" detail="Livestock health • Yesterday" status="Guidance ready" tone="livestock" />
       <View style={styles.notice}><Text style={styles.noticeTitle}>Reports will appear here</Text><Text style={styles.noticeText}>These are interface previews. Submitted reports will be saved and tracked after the reporting and backend features are added.</Text></View>

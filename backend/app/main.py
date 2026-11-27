@@ -36,6 +36,11 @@ def attach_assessment(report_id: int, payload: ScreeningRead, db: Session = Depe
 @app.get("/farmers/{farmer_id}/reports", response_model=list[ReportRead])
 def list_reports(farmer_id: int, db: Session = Depends(get_db)):
     return list(db.scalars(select(Report).where(Report.farmer_id == farmer_id).order_by(Report.created_at.desc())))
+@app.get("/reports/{report_id}", response_model=ReportRead)
+def get_report(report_id: int, db: Session = Depends(get_db)):
+    report = db.get(Report, report_id)
+    if not report: raise HTTPException(404, "Report not found")
+    return report
 @app.post("/ai/screenings/tomato-leaf", response_model=ScreeningRead)
 async def screen_tomato_leaf_image(image: UploadFile = File(...)):
     if image.content_type not in {"image/jpeg", "image/png", "image/webp"}: raise HTTPException(415, "Upload a JPEG, PNG, or WebP image")

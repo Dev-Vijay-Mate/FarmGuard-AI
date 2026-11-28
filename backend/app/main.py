@@ -3,7 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from .database import Base, engine, get_db
 from .models import Farmer, Report
-from .schemas import FarmerCreate, FarmerRead, ReportCreate, ReportRead, ScreeningRead
+from .schemas import FarmerCreate, FarmerRead, ReportCreate, ReportRead, ScreeningRead, ReportStatusUpdate
 from .ml.inference import screen_tomato_leaf
 from .ml.preprocessing import preprocess_image
 from .ml.guidance import screening_guidance
@@ -41,6 +41,11 @@ def get_report(report_id: int, db: Session = Depends(get_db)):
     report = db.get(Report, report_id)
     if not report: raise HTTPException(404, "Report not found")
     return report
+@app.patch("/reports/{report_id}/status", response_model=ReportRead)
+def update_report_status(report_id: int, payload: ReportStatusUpdate, db: Session = Depends(get_db)):
+    report = db.get(Report, report_id)
+    if not report: raise HTTPException(404, "Report not found")
+    report.status = payload.status; db.commit(); db.refresh(report); return report
 @app.post("/ai/screenings/tomato-leaf", response_model=ScreeningRead)
 async def screen_tomato_leaf_image(image: UploadFile = File(...)):
     if image.content_type not in {"image/jpeg", "image/png", "image/webp"}: raise HTTPException(415, "Upload a JPEG, PNG, or WebP image")

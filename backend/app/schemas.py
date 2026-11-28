@@ -33,3 +33,5 @@ class ScreeningRead(BaseModel):
     model: str
     disclaimer: str
     guidance: list[str]
+class ReportStatusUpdate(BaseModel):
+    status: str = Field(pattern="^(submitted|assessment_ready|expert_review|resolved)$")

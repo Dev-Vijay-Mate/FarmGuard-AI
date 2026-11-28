@@ -26,6 +26,10 @@ Run `docker compose up --build` to start PostgreSQL and the FastAPI API at `http
 
 ## Initial structure
 
+## Day 8 report tracking
+
+Farmers can filter plant and livestock reports, open an individual report, see its submission-to-resolution timeline, read preliminary assessment guidance, and track status.
+
 - `app/_layout.tsx` configures the root navigation stack.
 - `app/index.tsx` contains the initial farmer dashboard.
 - `app.json` defines the Expo and Android app configuration.

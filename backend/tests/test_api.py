@@ -18,3 +18,7 @@ def test_report_needs_existing_farmer():
     with TestClient(app) as client:
         response = client.post("/reports", json={"farmer_id":999,"concern_type":"livestock","symptoms":"Low energy","description":"Animal has not eaten today"})
         assert response.status_code == 404
+
+def test_missing_report_returns_not_found():
+    with TestClient(app) as client:
+        assert client.get("/reports/99999").status_code == 404
